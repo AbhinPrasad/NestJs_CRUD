@@ -85,7 +85,10 @@ export class UsersController {
   }
 
   @Delete(':userId')
-  deleteUserById(@Param('userId') userId: string, @Res() res: Response): void {
+  deleteUserById(
+    @Param('userId') userId: string,
+    @Res({ passthrough: true }) res: Response,
+  ): void {
     const user = users.findIndex((user) => user.id === parseInt(userId));
     if (!user) {
       res.status(HttpStatus.BAD_REQUEST).send({
@@ -101,3 +104,21 @@ export class UsersController {
     });
   }
 }
+
+/*
+By using a library specific response object, this approach works and offers more flexibility 
+by giving full control over the response object (such as header manipulation and access to 
+library-specific features), it should be used with caution. Generally, this method is less 
+clear and comes with some downsides. The main disadvantage is that your code becomes 
+platform-dependent, as different underlying libraries may have different APIs for the response 
+object. Additionally, it can make testing more challenging, as you'll need to mock the response 
+object, among other things.
+
+Furthermore, by using this approach, you lose compatibility with Nest features that rely on 
+standard response handling, such as Interceptors and the @HttpCode() / @Header() decorators. 
+To address this, you can enable the passthrough option like this:(refer delete API).
+
+With this approach, you can interact with the native response object 
+(for example, setting cookies or headers based on specific conditions), while still allowing 
+the framework to handle the rest.
+*/

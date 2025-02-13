@@ -7,8 +7,9 @@ import {
   Query,
   Res,
   Body,
+  Patch,
 } from '@nestjs/common';
-import { AddUserDto, ResponseJson, User } from 'src/utils/types';
+import { UserDto, ResponseJson, User } from 'src/utils/types';
 import { users } from 'src/utils/data';
 import { Response } from 'express';
 
@@ -42,7 +43,7 @@ export class UsersController {
         message: 'User not found!',
       });
     }
-    res.status(HttpStatus.OK).send({
+    res.status(HttpStatus.OK).json({
       success: true,
       message: 'User retrieved successfully',
       data: user,
@@ -50,7 +51,7 @@ export class UsersController {
   }
 
   @Post()
-  addUser(@Body() user: AddUserDto): ResponseJson {
+  addUser(@Body() user: UserDto): ResponseJson {
     const newUser = { id: users.length + 1, ...user };
     users.push(newUser);
     return {
@@ -58,5 +59,27 @@ export class UsersController {
       message: 'User created successfully!',
       data: newUser,
     };
+  }
+
+  @Patch(':userId')
+  updateUserById(
+    @Param('userId') userId: string,
+    @Body() body: UserDto,
+    @Res() res: Response,
+  ): void {
+    const id = parseInt(userId);
+    const index = users.findIndex((user) => user.id === id);
+    if (!index) {
+      res
+        .send(HttpStatus.BAD_REQUEST)
+        .json({ success: false, message: 'User not found!' });
+    }
+
+    users[index] = { id, ...body };
+    res.status(HttpStatus.OK).send({
+      success: true,
+      message: 'User updated successfully!',
+      data: users[index],
+    });
   }
 }

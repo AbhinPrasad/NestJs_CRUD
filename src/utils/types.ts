@@ -20,7 +20,7 @@ export interface User {
 ? reference them at runtime. This is important because features like Pipes rely on having 
 ? access to the metatype of variables at runtime, which is only possible with classes.
 */
-export class AddUserDto {
+export class UserDto {
   name: string;
   age: number;
   job: string;

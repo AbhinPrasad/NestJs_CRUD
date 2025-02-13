@@ -8,6 +8,7 @@ import {
   Res,
   Body,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { UserDto, ResponseJson, User } from 'src/utils/types';
 import { users } from 'src/utils/data';
@@ -80,6 +81,23 @@ export class UsersController {
       success: true,
       message: 'User updated successfully!',
       data: users[index],
+    });
+  }
+
+  @Delete(':userId')
+  deleteUserById(@Param('userId') userId: string, @Res() res: Response): void {
+    const user = users.findIndex((user) => user.id === parseInt(userId));
+    if (!user) {
+      res.status(HttpStatus.BAD_REQUEST).send({
+        success: false,
+        message: 'User not found!',
+      });
+    }
+    users.splice(user, 1);
+    res.status(HttpStatus.OK).json({
+      success: true,
+      message: 'User removed successfully!',
+      data: users,
     });
   }
 }

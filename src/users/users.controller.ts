@@ -1,5 +1,14 @@
-import { Controller, Get, HttpStatus, Param, Query, Res } from '@nestjs/common';
-import { ResponseJson, User } from 'src/utils/types';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+  Res,
+  Body,
+} from '@nestjs/common';
+import { AddUserDto, ResponseJson, User } from 'src/utils/types';
 import { users } from 'src/utils/data';
 import { Response } from 'express';
 
@@ -26,9 +35,7 @@ export class UsersController {
 
   @Get(':userId')
   getUserById(@Param('userId') userId: string, @Res() res: Response): void {
-    console.log('userId', userId);
     const user = users.find((user) => user.id === parseInt(userId));
-    console.log('user', user);
     if (!user) {
       res.status(HttpStatus.BAD_REQUEST).send({
         success: false,
@@ -40,5 +47,16 @@ export class UsersController {
       message: 'User retrieved successfully',
       data: user,
     });
+  }
+
+  @Post()
+  addUser(@Body() user: AddUserDto): ResponseJson {
+    const newUser = { id: users.length + 1, ...user };
+    users.push(newUser);
+    return {
+      success: true,
+      message: 'User created successfully!',
+      data: newUser,
+    };
   }
 }

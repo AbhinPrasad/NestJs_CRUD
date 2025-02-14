@@ -28,4 +28,13 @@ export class UsersService {
     const user = this.users.find((user) => user.id === id);
     return user ? user : null;
   }
+
+  updateUser(userData: User, id: number) {
+    const index = this.users.findIndex((user) => user.id === id);
+    if (index == -1) {
+      return null;
+    }
+    this.users[index] = { id, ...userData };
+    return this.users[index];
+  }
 }

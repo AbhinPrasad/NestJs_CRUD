@@ -34,7 +34,7 @@ export class UsersController {
   getUserById(@Param('userId') userId: string, @Res() res: Response): void {
     const id = parseInt(userId);
     const result = this.userService.getUserById(id);
-    
+
     if (!result) {
       res.status(HttpStatus.BAD_REQUEST).send({
         success: false,
@@ -65,18 +65,17 @@ export class UsersController {
     @Res() res: Response,
   ): void {
     const id = parseInt(userId);
-    const index = users.findIndex((user) => user.id === id);
-    if (!index) {
+    const result = this.userService.updateUser(body, id);
+    if (!result) {
       res
-        .send(HttpStatus.BAD_REQUEST)
+        .status(HttpStatus.BAD_REQUEST)
         .json({ success: false, message: 'User not found!' });
+      return;
     }
-
-    users[index] = { id, ...body };
-    res.status(HttpStatus.OK).send({
+    res.status(HttpStatus.OK).json({
       success: true,
       message: 'User updated successfully!',
-      data: users[index],
+      data: result,
     });
   }
 

@@ -31,10 +31,19 @@ export class UsersService {
 
   updateUser(userData: User, id: number) {
     const index = this.users.findIndex((user) => user.id === id);
-    if (index == -1) {
+    if (index === -1) {
       return null;
     }
     this.users[index] = { id, ...userData };
     return this.users[index];
+  }
+
+  deleteUser(id: number) {
+    const user = this.users.findIndex((user) => user.id === id);
+    if (user === -1) {
+      return null;
+    }
+    this.users.splice(user, 1);
+    return this.users;
   }
 }

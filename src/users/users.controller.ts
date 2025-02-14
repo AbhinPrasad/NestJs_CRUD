@@ -11,7 +11,6 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UserDto, ResponseJson } from 'src/utils/types';
-import { users } from 'src/utils/data';
 import { Response } from 'express';
 import { UsersService } from './users.service';
 
@@ -84,18 +83,19 @@ export class UsersController {
     @Param('userId') userId: string,
     @Res({ passthrough: true }) res: Response,
   ): void {
-    const user = users.findIndex((user) => user.id === parseInt(userId));
-    if (!user) {
+    const id = parseInt(userId);
+    const result = this.userService.deleteUser(id);
+    if (!result) {
       res.status(HttpStatus.BAD_REQUEST).send({
         success: false,
         message: 'User not found!',
       });
     }
-    users.splice(user, 1);
+
     res.status(HttpStatus.OK).json({
       success: true,
       message: 'User removed successfully!',
-      data: users,
+      data: result,
     });
   }
 }

@@ -23,4 +23,9 @@ export class UsersService {
     }
     return this.users;
   }
+
+  getUserById(id: number) {
+    const user = this.users.find((user) => user.id === id);
+    return user ? user : null;
+  }
 }

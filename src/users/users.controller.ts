@@ -32,8 +32,10 @@ export class UsersController {
 
   @Get(':userId')
   getUserById(@Param('userId') userId: string, @Res() res: Response): void {
-    const user = users.find((user) => user.id === parseInt(userId));
-    if (!user) {
+    const id = parseInt(userId);
+    const result = this.userService.getUserById(id);
+    
+    if (!result) {
       res.status(HttpStatus.BAD_REQUEST).send({
         success: false,
         message: 'User not found!',
@@ -42,7 +44,7 @@ export class UsersController {
     res.status(HttpStatus.OK).json({
       success: true,
       message: 'User retrieved successfully',
-      data: user,
+      data: result,
     });
   }
 

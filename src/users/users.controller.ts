@@ -10,31 +10,23 @@ import {
   Patch,
   Delete,
 } from '@nestjs/common';
-import { UserDto, ResponseJson, User } from 'src/utils/types';
+import { UserDto, ResponseJson } from 'src/utils/types';
 import { users } from 'src/utils/data';
 import { Response } from 'express';
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private userService : UsersService){}
+  constructor(private userService: UsersService) {}
 
   @Get()
   getUsersList(@Query('searchTerm') searchTerm?: string): ResponseJson {
-    let usersList: User[] = [];
-    if (searchTerm) {
-      usersList = users.filter((user) => {
-        return (
-          user.name.includes(searchTerm) ||
-          user.age.toString().includes(searchTerm) ||
-          user.job.includes(searchTerm)
-        );
-      });
-    }
+    const query = searchTerm ?? null;
+    const result = this.userService.getAllUsers(query);
     return {
       success: true,
       message: 'User list retrieved successfully!',
-      data: searchTerm ? usersList : users,
+      data: result,
     };
   }
 
@@ -56,7 +48,7 @@ export class UsersController {
 
   @Post()
   addUser(@Body() user: UserDto): ResponseJson {
-    const result = this.userService.insertUser(user)
+    const result = this.userService.insertUser(user);
     return {
       success: true,
       message: 'User created successfully!',

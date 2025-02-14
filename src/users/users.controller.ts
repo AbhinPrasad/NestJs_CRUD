@@ -13,9 +13,12 @@ import {
 import { UserDto, ResponseJson, User } from 'src/utils/types';
 import { users } from 'src/utils/data';
 import { Response } from 'express';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
+  constructor(private userService : UsersService){}
+
   @Get()
   getUsersList(@Query('searchTerm') searchTerm?: string): ResponseJson {
     let usersList: User[] = [];
@@ -53,12 +56,11 @@ export class UsersController {
 
   @Post()
   addUser(@Body() user: UserDto): ResponseJson {
-    const newUser = { id: users.length + 1, ...user };
-    users.push(newUser);
+    const result = this.userService.insertUser(user)
     return {
       success: true,
       message: 'User created successfully!',
-      data: newUser,
+      data: result,
     };
   }
 

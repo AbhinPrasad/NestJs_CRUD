@@ -5,7 +5,7 @@ export interface ResponseJson {
 }
 
 export interface User {
-  id: number;
+  id?: number;
   name: string;
   age: number;
   job: string;

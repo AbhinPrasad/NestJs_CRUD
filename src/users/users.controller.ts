@@ -10,6 +10,7 @@ import {
   Patch,
   Delete,
   HttpException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { UserDto, ResponseJson } from 'src/utils/types';
 import { Response } from 'express';
@@ -21,6 +22,7 @@ export class UsersController {
 
   @Get()
   getUsersList(@Query('searchTerm') searchTerm?: string): ResponseJson {
+    // throw new ForbiddenException();  ---> Custom Exceptions
     /* 
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN); ---> Exception Filter
       By default, the JSON response body contains two properties:

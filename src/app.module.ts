@@ -42,4 +42,10 @@ You can use a functional middleware instead when using app.use().
 Alternatively, you can use a class middleware and consume it with .forRoutes('*') 
 within the AppModule (or any other module).
 
+When using this approach(APP_FILTER) to perform dependency injection for the filter,
+note that regardless of the module where this construction is employed, 
+the filter is, in fact, global. 
+Where should this be done? Choose the module where the filter 
+(HttpExceptionFilter in the example above) is defined. 
+Also, useClass is not the only way of dealing with custom provider registration.
 */

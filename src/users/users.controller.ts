@@ -9,6 +9,7 @@ import {
   Body,
   Patch,
   Delete,
+  HttpException,
 } from '@nestjs/common';
 import { UserDto, ResponseJson } from 'src/utils/types';
 import { Response } from 'express';
@@ -20,13 +21,39 @@ export class UsersController {
 
   @Get()
   getUsersList(@Query('searchTerm') searchTerm?: string): ResponseJson {
-    const query = searchTerm ?? null;
-    const result = this.userService.getAllUsers(query);
-    return {
-      success: true,
-      message: 'User list retrieved successfully!',
-      data: result,
-    };
+    /* 
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN); ---> Exception Filter
+      By default, the JSON response body contains two properties:
+       - statusCode: defaults to the HTTP status code provided in the status argument
+       - message: a short description of the HTTP error based on the status
+    */
+    try {
+      const query = searchTerm ?? null;
+      const result = this.userService.getAllUsers(query);
+      return {
+        success: true,
+        message: 'User list retrieved successfully!',
+        data: result,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        { cause: error },
+      );
+      /*
+      To override the entire JSON response body, pass an object in the response argument. 
+      Nest will serialize the object and return it as the JSON response body.
+
+      There is a third constructor argument (optional) - options - that can be used 
+      to provide an error cause. This cause object is not serialized into the response object, 
+      but it can be useful for logging purposes, providing valuable information about 
+      the inner error that caused the HttpException to be thrown
+      */
+    }
   }
 
   @Get(':userId')

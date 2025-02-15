@@ -10,11 +10,12 @@ import {
   Patch,
   Delete,
   HttpException,
-  ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { UserDto, ResponseJson } from 'src/utils/types';
 import { Response } from 'express';
 import { UsersService } from './users.service';
+import { CustomForbiddenException } from '../common/forbidden.exception';
 
 @Controller('users')
 export class UsersController {
@@ -22,9 +23,10 @@ export class UsersController {
 
   @Get()
   getUsersList(@Query('searchTerm') searchTerm?: string): ResponseJson {
-    // throw new ForbiddenException();  ---> Custom Exceptions
     /* 
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN); ---> Exception Filter
+      throw new CustomForbiddenException();                       ---> Custom Exceptions
+      throw new BadRequestException()                             ---> Built-in Http Exception
       By default, the JSON response body contains two properties:
        - statusCode: defaults to the HTTP status code provided in the status argument
        - message: a short description of the HTTP error based on the status

@@ -13,12 +13,15 @@ import {
   // BadRequestException,
   UseFilters,
   ParseIntPipe,
+  UsePipes,
 } from '@nestjs/common';
 import { UserDto, ResponseJson } from 'src/utils/types';
 import { Response } from 'express';
 import { UsersService } from './users.service';
 // import { CustomForbiddenException } from '../common/forbidden.exception';
 import { HttpExceptionFilter } from 'src/common/http-exception.filter';
+import { ZodValidationPipe } from 'src/pipes/validation.pipe';
+import { createUserSchema } from 'src/common/validation/schema';
 
 @Controller('users')
 // @UseFilters(HttpExceptionFilter) ---> controller-scoped filter
@@ -95,6 +98,7 @@ export class UsersController {
   }
 
   @Post()
+  @UsePipes(new ZodValidationPipe(createUserSchema))
   addUser(@Body() user: UserDto): ResponseJson {
     const result = this.userService.insertUser(user);
     return {

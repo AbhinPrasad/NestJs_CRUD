@@ -13,4 +13,11 @@ bootstrap();
 
 /*
 The useGlobalFilters() method does not set up filters for gateways or hybrid applications.
+
+Global-scoped filters are used across the whole application, for every controller and 
+every route handler. In terms of dependency injection, global filters registered from 
+outside of any module (with useGlobalFilters()) cannot inject dependencies since this 
+is done outside the context of any module. In order to solve this issue, you can 
+register a global-scoped filter directly from any module using APP_FILTER.
+Refer app.module.ts
 */

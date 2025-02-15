@@ -11,11 +11,13 @@ import {
   Delete,
   HttpException,
   BadRequestException,
+  UseFilters,
 } from '@nestjs/common';
 import { UserDto, ResponseJson } from 'src/utils/types';
 import { Response } from 'express';
 import { UsersService } from './users.service';
 import { CustomForbiddenException } from '../common/forbidden.exception';
+import { HttpExceptionFilter } from 'src/common/http-exception.filter';
 
 @Controller('users')
 export class UsersController {
@@ -60,8 +62,10 @@ export class UsersController {
     }
   }
 
+  @UseFilters(new HttpExceptionFilter())
   @Get(':userId')
   getUserById(@Param('userId') userId: string, @Res() res: Response): void {
+    throw new BadRequestException();
     const id = parseInt(userId);
     const result = this.userService.getUserById(id);
 

@@ -39,6 +39,7 @@ export class UsersController {
         success: false,
         message: 'User not found!',
       });
+      return;
     }
     res.status(HttpStatus.OK).json({
       success: true,

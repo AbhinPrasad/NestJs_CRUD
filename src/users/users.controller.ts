@@ -73,7 +73,7 @@ export class UsersController {
   @UseFilters(HttpExceptionFilter)
   @Get(':userId')
   getUserById(@Param('userId') userId: string, @Res() res: Response): void {
-    throw new BadRequestException();
+    throw new BadRequestException('This is a bad Request');
     const id = parseInt(userId);
     const result = this.userService.getUserById(id);
 

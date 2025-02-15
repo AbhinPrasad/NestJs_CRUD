@@ -8,13 +8,13 @@ import { CommonController } from './common/common.controller';
 import { CommonModule } from './common/common.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { APP_FILTER } from '@nestjs/core';
-import { HttpExceptionFilter } from './common/http-exception.filter';
+import { CatchEverythingFilter } from './common/catch-everything.filter';
 
 @Module({
   imports: [UsersModule, CommonModule],
   controllers: [AppController, UsersController, CommonController],
   providers: [
-    { provide: APP_FILTER, useClass: HttpExceptionFilter },
+    { provide: APP_FILTER, useClass: CatchEverythingFilter },
     AppService,
     UsersService,
   ],

@@ -20,6 +20,7 @@ import { CustomForbiddenException } from '../common/forbidden.exception';
 import { HttpExceptionFilter } from 'src/common/http-exception.filter';
 
 @Controller('users')
+// @UseFilters(HttpExceptionFilter) ---> controller-scoped filter
 export class UsersController {
   constructor(private userService: UsersService) {}
 

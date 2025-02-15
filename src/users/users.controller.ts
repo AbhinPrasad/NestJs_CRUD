@@ -62,7 +62,14 @@ export class UsersController {
     }
   }
 
-  @UseFilters(new HttpExceptionFilter())
+  /*
+  @UseFilters(new HttpExceptionFilter()) --> Instance of HttpExceptionFilter passing to useFilters
+  @UseFilters(HttpExceptionFilter) --> Directly passing the class
+  Prefer applying filters by using classes instead of instances when possible.
+  It reduces memory usage since Nest can easily reuse instances of the same class 
+  across your entire module.
+  */
+  @UseFilters(HttpExceptionFilter)
   @Get(':userId')
   getUserById(@Param('userId') userId: string, @Res() res: Response): void {
     throw new BadRequestException();

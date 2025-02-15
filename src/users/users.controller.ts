@@ -10,13 +10,14 @@ import {
   Patch,
   Delete,
   HttpException,
-  BadRequestException,
+  // BadRequestException,
   UseFilters,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UserDto, ResponseJson } from 'src/utils/types';
 import { Response } from 'express';
 import { UsersService } from './users.service';
-import { CustomForbiddenException } from '../common/forbidden.exception';
+// import { CustomForbiddenException } from '../common/forbidden.exception';
 import { HttpExceptionFilter } from 'src/common/http-exception.filter';
 
 @Controller('users')
@@ -72,10 +73,12 @@ export class UsersController {
   */
   @UseFilters(HttpExceptionFilter)
   @Get(':userId')
-  getUserById(@Param('userId') userId: string, @Res() res: Response): void {
-    throw new BadRequestException('This is a bad Request');
-    const id = parseInt(userId);
-    const result = this.userService.getUserById(id);
+  getUserById(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Res() res: Response,
+  ): void {
+    // throw new BadRequestException('This is a bad Request');
+    const result = this.userService.getUserById(userId);
 
     if (!result) {
       res.status(HttpStatus.BAD_REQUEST).send({
@@ -103,12 +106,11 @@ export class UsersController {
 
   @Patch(':userId')
   updateUserById(
-    @Param('userId') userId: string,
+    @Param('userId', ParseIntPipe) userId: number,
     @Body() body: UserDto,
     @Res() res: Response,
   ): void {
-    const id = parseInt(userId);
-    const result = this.userService.updateUser(body, id);
+    const result = this.userService.updateUser(body, userId);
     if (!result) {
       res
         .status(HttpStatus.BAD_REQUEST)
@@ -124,11 +126,10 @@ export class UsersController {
 
   @Delete(':userId')
   deleteUserById(
-    @Param('userId') userId: string,
+    @Param('userId', ParseIntPipe) userId: number,
     @Res({ passthrough: true }) res: Response,
   ): void {
-    const id = parseInt(userId);
-    const result = this.userService.deleteUser(id);
+    const result = this.userService.deleteUser(userId);
     if (!result) {
       res.status(HttpStatus.BAD_REQUEST).send({
         success: false,

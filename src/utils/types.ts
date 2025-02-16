@@ -1,3 +1,5 @@
+import { IsString, IsInt } from 'class-validator';
+
 export interface ResponseJson {
   success: boolean;
   message: string;
@@ -21,7 +23,12 @@ export interface User {
 ? access to the metatype of variables at runtime, which is only possible with classes.
 */
 export class UserDto {
+  @IsString()
   name: string;
+
+  @IsInt()
   age: number;
+
+  @IsString()
   job: string;
 }

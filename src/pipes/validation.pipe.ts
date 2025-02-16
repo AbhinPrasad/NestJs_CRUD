@@ -1,28 +1,40 @@
 import {
   PipeTransform,
+  Injectable,
   ArgumentMetadata,
   BadRequestException,
 } from '@nestjs/common';
-import { ZodSchema, infer as ZodInfer, ZodError } from 'zod';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
 
-export class ZodValidationPipe<T extends ZodSchema> implements PipeTransform {
-  constructor(private schema: T) {}
+type ClassConstructor<T = any> = new (...args: any[]) => T;
 
-  transform(value: unknown, metadata: ArgumentMetadata): unknown {
-    try {
-      const parsedValue = this.schema.parse(value) as ZodInfer<T>;
-      return parsedValue;
-    } catch (err) {
-      if (err instanceof ZodError) {
-        // Ensure TypeScript recognizes err as ZodError
-        const errorMessage: string = err.errors
-          .map((e) => `${e.path.join('.')}: ${e.message}`)
-          .join(', ');
-
-        throw new BadRequestException(errorMessage);
-      }
-
-      throw new BadRequestException('Validation failed', { cause: err });
+@Injectable()
+export class ValidationPipe implements PipeTransform {
+  async transform(
+    value: unknown,
+    { metatype }: ArgumentMetadata,
+  ): Promise<unknown> {
+    if (!metatype || !this.toValidate(metatype)) {
+      return value;
     }
+
+    const object = plainToInstance(
+      metatype as new (...args: any[]) => object,
+      value,
+    );
+    const errors = await validate(object);
+    // console.log('errors',errors)
+
+    if (errors.length > 0) {
+      throw new BadRequestException('Validation failed');
+    }
+
+    return value;
+  }
+
+  private toValidate(metatype: unknown): boolean {
+    const types: ClassConstructor[] = [String, Boolean, Number, Array, Object];
+    return !types.includes(metatype as ClassConstructor);
   }
 }

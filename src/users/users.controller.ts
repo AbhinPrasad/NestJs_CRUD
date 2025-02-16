@@ -15,6 +15,7 @@ import {
   ParseIntPipe,
   UsePipes,
   DefaultValuePipe,
+  UseGuards,
 } from '@nestjs/common';
 import { UserDto, ResponseJson } from 'src/utils/types';
 import { Response } from 'express';
@@ -24,9 +25,12 @@ import { HttpExceptionFilter } from 'src/common/http-exception.filter';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { createUserSchema } from 'src/common/validation/schema';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/guards/roles.decorator';
 
 @Controller('users')
 // @UseFilters(HttpExceptionFilter) ---> controller-scoped filter
+// @UseGuards(RolesGuard)  ---> controller-scopere Guard
 export class UsersController {
   constructor(private userService: UsersService) {}
 
@@ -100,6 +104,7 @@ export class UsersController {
   }
 
   @Post()
+  @Roles(['admin'])
   // @UsePipes(new ZodValidationPipe(createUserSchema)) ---> Setting up validation pipe using UsePipes decorator
   // addUser(@Body(new ValidationPipe()) user: UserDto): ResponseJson {  ---> Setting up validation pipe for specific route
   addUser(@Body() user: UserDto): ResponseJson {
@@ -111,7 +116,7 @@ export class UsersController {
     };
   }
 
-/*
+  /*
 
 Parse* pipes expect a parameter's value to be defined. They throw an exception upon receiving 
 null or undefined values. To allow an endpoint to handle missing querystring parameter values, 

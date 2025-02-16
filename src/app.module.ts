@@ -7,9 +7,10 @@ import { UsersModule } from './users/users.module';
 import { CommonController } from './common/common.controller';
 import { CommonModule } from './common/common.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { CatchEverythingFilter } from './common/catch-everything.filter';
 import { ValidationPipe } from './pipes/validation.pipe';
+import { RolesGuard } from './guards/roles.guard';
 
 @Module({
   imports: [UsersModule, CommonModule],
@@ -17,6 +18,7 @@ import { ValidationPipe } from './pipes/validation.pipe';
   providers: [
     { provide: APP_FILTER, useClass: CatchEverythingFilter },
     { provide: APP_PIPE, useClass: ValidationPipe },
+    { provide: APP_GUARD, useClass: RolesGuard },
     AppService,
     UsersService,
   ],

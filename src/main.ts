@@ -3,12 +3,14 @@ import { AppModule } from './app.module';
 import { FunctionalLogger } from './middlewares/functional.middleware';
 import { HttpExceptionFilter } from './common/http-exception.filter';
 import { ValidationPipe } from './pipes/validation.pipe';
+import { RolesGuard } from './guards/roles.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(FunctionalLogger); // --->  bind middleware to every registered route at once
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());
+  // app.useGlobalGuards(new RolesGuard());
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

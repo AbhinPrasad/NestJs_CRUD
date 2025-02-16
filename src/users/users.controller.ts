@@ -99,8 +99,9 @@ export class UsersController {
   }
 
   @Post()
-  // @UsePipes(new ZodValidationPipe(createUserSchema))
-  addUser(@Body(new ValidationPipe()) user: UserDto): ResponseJson {
+  // @UsePipes(new ZodValidationPipe(createUserSchema)) ---> Setting up validation pipe using UsePipes decorator
+  // addUser(@Body(new ValidationPipe()) user: UserDto): ResponseJson {  ---> Setting up validation pipe for specific route
+  addUser(@Body() user: UserDto): ResponseJson {
     const result = this.userService.insertUser(user);
     return {
       success: true,

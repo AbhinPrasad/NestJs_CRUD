@@ -22,4 +22,11 @@ outside of any module (with useGlobalFilters()) cannot inject dependencies since
 is done outside the context of any module. In order to solve this issue, you can 
 register a global-scoped filter directly from any module using APP_FILTER.
 Refer app.module.ts
+
+Global pipes are used across the whole application, for every controller and every route handler.
+Note that in terms of dependency injection, global pipes registered from outside of any 
+module (with useGlobalPipes() as in the example above) cannot inject dependencies since 
+the binding has been done outside the context of any module. In order to solve this issue, 
+you can set up a global pipe directly from any module using APP_PIPE.
+Refer app.module.ts
 */

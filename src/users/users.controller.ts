@@ -14,6 +14,7 @@ import {
   UseFilters,
   ParseIntPipe,
   UsePipes,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { UserDto, ResponseJson } from 'src/utils/types';
 import { Response } from 'express';
@@ -110,9 +111,19 @@ export class UsersController {
     };
   }
 
+/*
+
+Parse* pipes expect a parameter's value to be defined. They throw an exception upon receiving 
+null or undefined values. To allow an endpoint to handle missing querystring parameter values, 
+we have to provide a default value to be injected before the Parse* pipes operate on these values. 
+The DefaultValuePipe serves that purpose. Simply instantiate a DefaultValuePipe in the @Param() 
+decorator before the relevant Parse* pipe, as shown below:
+
+*/
+
   @Patch(':userId')
   updateUserById(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('userId', new DefaultValuePipe(0), ParseIntPipe) userId: number,
     @Body() body: UserDto,
     @Res() res: Response,
   ): void {
